@@ -250,6 +250,51 @@ The processing rules and response formats defined in Sections 12.3 and 12.4 of {
 
 * The TTS in trust domain II SHOULD transcribe the workflow-related claims from the subject token to the claims of issued Txn Token.  See Claims Transcription (section 4.4).
 
+## Mode B: Direct Txn-Token Exchange
+
+This section defines the requests and responses for Mode B as described in Section 3.2. 
+
+### Token Exchange for Txn-JAG
+Workload A in Trust Domain I performs token exchange with the AS in Trust Domain I to obtain a Txn-JAG that can be used with the TTS in Trust Domain II.
+
+#### Txn-JAG Request
+The request follows the same format as defined in Section 4.1.1.1, except for the resource or audience claim:
+
+**resource**
+&nbsp;&nbsp;&nbsp;&nbsp;**REQUIRED.** if audience is not set. It MUST be the URI of the TTS in Trust Domain II.
+
+**audience**
+&nbsp;&nbsp;&nbsp;&nbsp;**REQUIRED.** if resource is not set. It MUST be the well-known/logical name of the TTS in Trust Domain II.
+
+
+#### Txn-JAG Response
+The processing rules and response format are identical to those described in Section 4.1.1.2, with the exception that the aud claim in the issued Txn-JAG MUST identify the TTS of Trust Domain II.
+
+#### Txn-JAG Transmission Methods
+
+When a Txn-JAG is presented directly to an endpoint, the workload MUST include the Txn-JAG in an HTTP header named Txn-JAG (i.e., Txn-JAG: <Txn-JAG>). This dedicated header avoids ambiguity with the Authorization header, which is conventionally associated with access tokens per {{RFC6750}}.
+
+
+
+### Token Exchange for Txn-Token
+Endpoint B performs a token exchange with the TTS in Trust Domain II to obtain a local Txn-Token in Trust Domain II, using the Txn-JAG as the subject_token.
+
+#### Txn-Token Request
+The parameters for the Txn-Token request follow the definitions in section 12.1 of {{?I-D.ietf-oauth-transaction-tokens}}. The following requirements apply:
+
+**subject_token**
+&nbsp;&nbsp;&nbsp;&nbsp;**REQUIRED.** MUST be the Txn-JAG issued by the AS in Trust Domain I, as obtained in Section 4.2.1 and presented to Endpoint B via the method in Section 4.2.1.3.
+
+**subject_token_type**
+&nbsp;&nbsp;&nbsp;&nbsp;**REQUIRED.**  MUST be urn:ietf:params:oauth:token-type:jwt-bearer.
+
+#### Txn-Token Response
+The processing rules and response format are identical to those described in Section 4.1.3.1, with the following modification for subject token validation:
+
+For subject token validation, the TTS in Trust Domain II MUST validate the Txn-JAG issued by the AS in Trust Domain I. This requires a pre-established trust relationship between the AS in Trust Domain I and the TTS in Trust Domain II. Such a trust relationship typically manifests as the exchange of key material.
+
+The transcription of workflow-related claims from the subject token (the Txn-JAG) to the issued Txn-Token follows the same rules defined in Section 4.3.
+
 # Security Considerations
 
 TODO Security
