@@ -69,11 +69,11 @@ This document bridges this gap by defining a mechanism to use a Txn-Token as the
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
 
-This document uses the terms "Workload", "Trust Domain", "External Endpoint", "Call Chain", and "Transaction Token Service" defined by {{?I-D.ietf-oauth-transaction-tokens}}, as well as "Authorization Server" (AS) defined by {{RFC6749}}. Moreover, the following terms are extended or defined in this document.
+This document uses the terms "Workload", "Trust Domain", "External Endpoint", "Call Chain", and "Transaction Token Service" (TTS) defined by {{?I-D.ietf-oauth-transaction-tokens}}, as well as "Authorization Server" (AS) defined by {{RFC6749}}. Moreover, the following terms are extended or defined in this document.
 
 * Intra-domain Transaction Token (Txn-Token). A short-lived, signed JWT that provides immutable information about the user, workloads, and specific contextual attributes of the call within a trust domain, as defined in {{?I-D.ietf-oauth-transaction-tokens}}.
 
-* Cross-domain Transaction Token. A txn-token that preserves and propagates workflow-related claims from an upstream trust domain to a downstream one via identity chaining as defined in {{?I-D.ietf-oauth-identity-chaining}}.
+* Cross-domain Transaction Token. A Txn-Token that preserves and propagates workflow-related claims from an upstream trust domain to a downstream one via identity chaining as defined in {{?I-D.ietf-oauth-identity-chaining}}.
 
 * Transaction JWT Authorization Grant (Txn-JAG). A specialized JWT acting as an OAuth 2.0 authorization grant as defined in {{RFC7523}}. It carries the workflow-related claims, ensuring the integrity and auditability of the cross-domain call chain.
 
@@ -92,37 +92,36 @@ The following subsections focus on the logical orchestration and context propaga
 This mode follows the classic identity chaining workflow {{?I-D.ietf-oauth-identity-chaining}}. The workflow is illustrated in Figure 1.
 
 ~~~
- +--------------+  +--------------+  +--------------+  +--------------+  +--------------+
- | Workload A   |  | AS Domain I  |  | AS Domain II |  | Endpoint B   |  | TTS Domain II|
- | Trust Domain |  | Trust Domain |  | Trust Domain |  | Trust Domain |  | Trust Domain |
- |     I        |  |     I        |  |     II       |  |     II       |  |     II       |
- +--------------+  +--------------+  +--------------+  +--------------+  +--------------+
-       |                 |                 |                 |                 |
-       | (1) Token Exchange Request        |                 |                 |
-       |---------------->|                 |                 |                 |
-       | <Txn-Token I>   |                 |                 |                 |
-       |                 |                 |                 |                 |
-       | (2) Token Exchange Response       |                 |                 |
-       |<----------------|                 |                 |                 |
-       |     <Txn-JAG>   |                 |                 |                 |
-       |                 |                 |                 |                 |
-       | (3) present Txn-JAG               |                 |                 |
-       |---------------------------------->|                 |                 |
-       |                 |                 |                 |                 |
-       | (4) <Access Token>                |                 |                 |
-       |<----------------------------------|                 |                 |
-       |                 |                 |                 |                 |
-       | (5) Invoke with Access Token                        |                 |
-       |---------------------------------------------------->|                 |
-       |                 |                 |                 |                 |
-       |                 |                 |                 | (6) Txn-Token Request
-       |                 |                 |                 |---------------->|
-       |                 |                 |                 |  <Access Token> |
-       |                 |                 |                 |                 |
-       |                 |                 |                 | (7) Txn-Token Response
-       |                 |                 |                 |<----------------|
-       |                 |                 |                 | <Txn-Token II>  |
-~~~
++----------+ +--------+ +---------+ +----------+ +---------+
+|Workload A| |   AS   | |    AS   | |Endpoint B| |   TTS   |
+|Domain I  | |Domain I| |Domain II| |Domain II | |Domain II|
++----------+ +--------+ +---------+ +----------+ +---------+
+ |                 |          |      |                 |
+ |(1)Token Exchange Request   |      |                 |
+ |---------------->|          |      |                 |
+ | <Txn-Token I>   |          |      |                 |
+ |                 |          |      |                 |
+ |(2)Token Exchange Response  |      |                 |
+ |<----------------|          |      |                 |
+ |     <Txn-JAG>   |          |      |                 |
+ |                 |          |      |                 |
+ |(3)Present Txn-JAG          |      |                 |
+ |--------------------------->|      |                 |
+ |                 |          |      |                 |
+ |(4)<Access Token>           |      |                 |
+ |<---------------------------|      |                 |
+ |                 |          |      |                 |
+ |(5)Invoke with Access Token |      |                 |
+ |----------------------------|----->|                 |
+ |                 |          |      |                 |
+ |                 |          |      |(6)Txn-Token Request
+ |                 |          |      |---------------->|
+ |                 |          |      | <Access Token>  |
+ |                 |          |      |                 |
+ |                 |          |      |(7)Txn-Token Response
+ |                 |          |      |<----------------|
+ |                 |          |      | <Txn-Token II>  |
+ ~~~
 
 *Figure 1: Indirect Txn-Token Exchange*
 
@@ -140,6 +139,44 @@ This mode follows the classic identity chaining workflow {{?I-D.ietf-oauth-ident
 
 (7) The TTS of Trust Domain II mints a local Txn-Token, transcribing the workflow-related claims from the access token into the new Txn-Token. See Section 4.3.2 for the response format.
 
+## Mode B: Direct Txn-Token Exchange
+This mode reduces round trips by allowing the TTS in Trust Domain II to accept the Txn-JAG directly as the subject token in a Txn-Token request. This requires a pre-established trust relationship between the AS in Trust Domain I and the TTS in Trust Domain II. The workflow is illustrated in Figure 2.
+
+
+~~~
++----------+   +--------+ +----------+     +---------+
+|Workload A|   |   AS   | |Endpoint B|     |   TTS   |
+| Domain I |   |Domain I| |Domain II |     |Domain II|
++----------+   +--------+ +----------+     +---------+
+     |                 |        |                 |
+     |(1)Token Exchange Request |                 |
+     |---------------->|        |                 |
+     |<Txn-Token I>    |        |                 |
+     |                 |        |                 |
+     |(2)Token Exchange Response|                 |
+     |<----------------|        |                 |
+     |<Txn-JAG>        |        |                 |
+     |                 |        |                 |
+     |(3)Present Txn-JAG        |                 |
+     |------------------------->|                 |
+     |                 |        |                 |
+     |                 |        |(4)Txn-Token Request
+     |                 |        |---------------->|
+     |                 |        | <Txn-JAG>       |
+     |                 |        |(5)Txn-Token Response
+     |                 |        |<----------------|
+     |                 |        | <Txn-Token II>  |
+~~~
+
+*Figure 2: Direct Txn-Token Exchange*
+
+Steps (1) and (2) are the same as those in Mode A.
+
+(3) Workload A in Trust Domain I presents the Txn-JAG to Endpoint B of Trust Domain II. See Section 4.5 for the transmission method.
+
+(4) Endpoint B uses Txn-JAG as the subject token to exchange for a local Txn-Token at its local TTS.
+
+(5) The TTS of Trust Domain II mints a local Txn-Token, transcribing the workflow-related context from the Txn-JAG into the local Txn-Token's claims.
 
 
 # Security Considerations
