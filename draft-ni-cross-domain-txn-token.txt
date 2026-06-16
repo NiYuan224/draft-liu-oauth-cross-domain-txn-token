@@ -69,11 +69,14 @@ Table of Contents
    3.  Workflows of Cross-Domain Transaction Token
      3.1.  Mode A: Indirect Txn-Token Exchange
      3.2.  Mode B: Direct Txn-Token Exchange
-   4.  Security Considerations
-   5.  IANA Considerations
-   6.  References
-     6.1.  Normative References
-     6.2.  Informative References
+   4.  Requests and Responses
+     4.1.  Mode A: Indirect Txn-Token Exchange
+       4.1.1.  Token Exchange for Txn-JAG
+   5.  Security Considerations
+   6.  IANA Considerations
+   7.  References
+     7.1.  Normative References
+     7.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -281,17 +284,57 @@ Table of Contents
    the workflow-related context from the Txn-JAG into the local Txn-
    Token's claims.
 
-4.  Security Considerations
+4.  Requests and Responses
+
+   The formats of requests and responses included in Section 3 are
+   detailed in this section.  To avoid redundancy, all illustrative
+   examples are provided in Appendix A.
+
+4.1.  Mode A: Indirect Txn-Token Exchange
+
+   This section defines the requests and responses for Mode A as
+   described in Section 3.1.
+
+4.1.1.  Token Exchange for Txn-JAG
+
+   Workload A in Trust Domain I performs token exchange with the AS in
+   Trust Domain I to obtain a Txn-JAG that can be used at the AS in
+   Trust Domain II.
+
+4.1.1.1.  Txn-JAG Request
+
+   The parameters for the Txn-JAG request build upon the definitions in
+   Section 2.3.1 of [I-D.ietf-oauth-identity-chaining] and [RFC8693].
+   While other parameters remain consistent with these specifications,
+   the following specific requirements apply:
+
+   *resource*
+   *REQUIRED* if audience is not set.  In Mode A (Indirect Txn-Token
+   Exchange), it MUST be the URI of the AS in Trust Domain II.
+
+   *audience*
+   *REQUIRED* if resource is not set.  In Mode A (Indirect Txn-Token
+   Exchange), it MUST be the Well known/logical name of the AS in Trust
+   Domain II.
+
+   *subject_token*
+   *REQUIRED.* MUST be a valid local Txn-Token issued within Trust
+   Domain I.
+
+   *subject_token_type*
+   *REQUIRED.* MUST be urn:ietf:params:oauth:token-type:txn_token.
+
+5.  Security Considerations
 
    TODO Security
 
-5.  IANA Considerations
+6.  IANA Considerations
 
    This document has no IANA actions.
 
-6.  References
+7.  References
 
-6.1.  Normative References
+7.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -311,7 +354,12 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-6.2.  Informative References
+   [RFC8693]  Jones, M., Nadalin, A., Campbell, B., Ed., Bradley, J.,
+              and C. Mortimore, "OAuth 2.0 Token Exchange", RFC 8693,
+              DOI 10.17487/RFC8693, January 2020,
+              <https://www.rfc-editor.org/rfc/rfc8693>.
+
+7.2.  Informative References
 
    [I-D.ietf-oauth-identity-chaining]
               Schwenkschuster, A., Kasselman, P., Burgin, K., Jenkins,
