@@ -296,6 +296,22 @@ For subject token validation, the TTS in Trust Domain II MUST validate the Txn-J
 
 The transcription of workflow-related claims from the subject token (the Txn-JAG) to the issued Txn-Token follows the same rules defined in Section 4.3.
 
+## Claims Transcription
+
+Claims transcription across trust domains SHOULD ensure that the workflow-related claims are preserved for auditability and accountability. This builds upon the principles defined in Section 2.5 of {{?I-D.ietf-oauth-identity-chaining}}. Specific transcription rules for workflow-related claims are defined as follows:
+
+
+* Preserving the txn claim. The txn claim serves as the immutable unique identifier for the cross-domain transaction. Both the AS and TTS MUST NOT modify or regenerate the txn value during transcription. It MUST be copied from the subject_token to the issued token to ensure auditability and accountability across different domains.
+
+* Evolving the req_wl claim. The req_wl MUST identify all the sequent workloads that requested or exchanged tokens throughout the cross-domain transaction. Specifically, the AS in Trust Domain I MUST add the identifier of Workload A to the req_wl in the issued Txn-JAG. The TTS in Trust Domain II MUST add the identifier of Endpoint B to req_wl in the issued Txn-Token in Trust Domain II. This ensures that every point where claims may change is recorded, providing a trail of how the claims reached its current state.
+
+* Data Minimization. The AS in Trust Domain I MAY apply security and privacy strategies to workflow-related claims when issuing the Txn-JAG. Such measures include but not limited to Removal and Encryption.
+
+    * Removal. Claims related to completed tasks or not required by downstream trust domains SHOULD be removed.
+
+    * Encryption. If certain claims (e.g., specific user PII or the complete req_wl) are required for end-to-end auditing but must remain invisible to the entities in downstream trust domains, the AS in Trust Domain I MAY encrypt these specific claims, and ensure that only a designated auditor possessing the corresponding decryption key can access the plaintext. Mechanisms for key management and decryption are out of scope of this document.
+
+
 # Security Considerations
 
 TODO Security
