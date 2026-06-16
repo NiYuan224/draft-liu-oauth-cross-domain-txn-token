@@ -40,6 +40,7 @@ normative:
   RFC6749:
   RFC7523:
   RFC8693:
+  RFC6750:
 
 informative:
   I-D.kiliram-agent-trust-auth-framework:
