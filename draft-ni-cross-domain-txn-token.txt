@@ -67,6 +67,7 @@ Table of Contents
    1.  Introduction
    2.  Conventions and Definitions
    3.  Workflows of Cross-Domain Transaction Token
+     3.1.  Mode A: Indirect Txn-Token Exchange
    4.  Security Considerations
    5.  IANA Considerations
    6.  References
@@ -166,6 +167,74 @@ Table of Contents
    The following subsections focus on the logical orchestration and
    context propagation of these workflows.  Definitions for the request
    and response formats are detailed in Section 4.
+
+3.1.  Mode A: Indirect Txn-Token Exchange
+
+   This mode follows the classic identity chaining workflow
+   [I-D.ietf-oauth-identity-chaining].  The workflow is illustrated in
+   Figure 1.
+
+ +--------------+  +--------------+  +--------------+  +--------------+  +--------------+
+ | Workload A   |  | AS Domain I  |  | AS Domain II |  | Endpoint B   |  | TTS Domain II|
+ | Trust Domain |  | Trust Domain |  | Trust Domain |  | Trust Domain |  | Trust Domain |
+ |     I        |  |     I        |  |     II       |  |     II       |  |     II       |
+ +--------------+  +--------------+  +--------------+  +--------------+  +--------------+
+       |                 |                 |                 |                 |
+       | (1) Token Exchange Request        |                 |                 |
+       |---------------->|                 |                 |                 |
+       | <Txn-Token I>   |                 |                 |                 |
+       |                 |                 |                 |                 |
+       | (2) Token Exchange Response       |                 |                 |
+       |<----------------|                 |                 |                 |
+       |     <Txn-JAG>   |                 |                 |                 |
+       |                 |                 |                 |                 |
+       | (3) present Txn-JAG               |                 |                 |
+       |---------------------------------->|                 |                 |
+       |                 |                 |                 |                 |
+       | (4) <Access Token>                |                 |                 |
+       |<----------------------------------|                 |                 |
+       |                 |                 |                 |                 |
+       | (5) Invoke with Access Token                        |                 |
+       |---------------------------------------------------->|                 |
+       |                 |                 |                 |                 |
+       |                 |                 |                 | (6) Txn-Token Request
+       |                 |                 |                 |---------------->|
+       |                 |                 |                 |  <Access Token> |
+       |                 |                 |                 |                 |
+       |                 |                 |                 | (7) Txn-Token Response
+       |                 |                 |                 |<----------------|
+       |                 |                 |                 | <Txn-Token II>  |
+
+   _Figure 1: Indirect Txn-Token Exchange_
+
+   (1) Workload A in Trust Domain I sends a token exchange request to
+   the local AS to exchange the local Txn-Token for a cross-domain Txn-
+   JAG.  See Section 4.1.1 for the request format.
+
+   (2) The AS in Trust Domain I validates the request, generates and
+   responds with the Txn-JAG, transcribing the workflow-related claims
+   from the local Txn-Token into the Txn-JAG's claims.  See
+   Section 4.1.2 for the response format.
+
+   (3) Workload A in Trust Domain I presents the Txn-JAG to the AS of
+   Trust Domain II to request an access token.  See Section 4.2.1 for
+   the request format.
+
+   (4) The AS of Trust Domain II validates the Txn-JAG and responds with
+   an access token, transcribing the workflow-related claims from the
+   Txn-JAG into the access token.  See Section 4.2.2 for the response
+   format.
+
+   (5) Workload A in Trust Domain I invokes Endpoint B of Trust Domain
+   II with the received access token.
+
+   (6) Endpoint B presents the inbound access token to the TTS of Trust
+   Domain II to request a Txn-Token.  See Section 4.3.1 for the request
+   format.
+
+   (7) The TTS of Trust Domain II mints a local Txn-Token, transcribing
+   the workflow-related claims from the access token into the new Txn-
+   Token.  See Section 4.3.2 for the response format.
 
 4.  Security Considerations
 

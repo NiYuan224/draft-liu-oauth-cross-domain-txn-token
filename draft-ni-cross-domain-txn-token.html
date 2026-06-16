@@ -1153,7 +1153,12 @@ svg {
             <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1" class="keepWithNext"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-workflows-of-cross-domain-t" class="internal xref">Workflows of Cross-Domain Transaction Token</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-workflows-of-cross-domain-t" class="internal xref">Workflows of Cross-Domain Transaction Token</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-mode-a-indirect-txn-token-e" class="internal xref">Mode A: Indirect Txn-Token Exchange</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
@@ -1229,6 +1234,56 @@ platforms, etc.). As illustrated in <span>[<a href="#I-D.ietf-kiliram-agent-trus
 </li>
       </ul>
 <p id="section-3-3">The following subsections focus on the logical orchestration and context propagation of these workflows. Definitions for the request and response formats are detailed in Section 4.<a href="#section-3-3" class="pilcrow">¶</a></p>
+<div id="mode-a-indirect-txn-token-exchange">
+<section id="section-3.1">
+        <h3 id="name-mode-a-indirect-txn-token-e">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-mode-a-indirect-txn-token-e" class="section-name selfRef">Mode A: Indirect Txn-Token Exchange</a>
+        </h3>
+<p id="section-3.1-1">This mode follows the classic identity chaining workflow <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>. The workflow is illustrated in Figure 1.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1-2">
+<pre>
+ +--------------+  +--------------+  +--------------+  +--------------+  +--------------+
+ | Workload A   |  | AS Domain I  |  | AS Domain II |  | Endpoint B   |  | TTS Domain II|
+ | Trust Domain |  | Trust Domain |  | Trust Domain |  | Trust Domain |  | Trust Domain |
+ |     I        |  |     I        |  |     II       |  |     II       |  |     II       |
+ +--------------+  +--------------+  +--------------+  +--------------+  +--------------+
+       |                 |                 |                 |                 |
+       | (1) Token Exchange Request        |                 |                 |
+       |----------------&gt;|                 |                 |                 |
+       | &lt;Txn-Token I&gt;   |                 |                 |                 |
+       |                 |                 |                 |                 |
+       | (2) Token Exchange Response       |                 |                 |
+       |&lt;----------------|                 |                 |                 |
+       |     &lt;Txn-JAG&gt;   |                 |                 |                 |
+       |                 |                 |                 |                 |
+       | (3) present Txn-JAG               |                 |                 |
+       |----------------------------------&gt;|                 |                 |
+       |                 |                 |                 |                 |
+       | (4) &lt;Access Token&gt;                |                 |                 |
+       |&lt;----------------------------------|                 |                 |
+       |                 |                 |                 |                 |
+       | (5) Invoke with Access Token                        |                 |
+       |----------------------------------------------------&gt;|                 |
+       |                 |                 |                 |                 |
+       |                 |                 |                 | (6) Txn-Token Request
+       |                 |                 |                 |----------------&gt;|
+       |                 |                 |                 |  &lt;Access Token&gt; |
+       |                 |                 |                 |                 |
+       |                 |                 |                 | (7) Txn-Token Response
+       |                 |                 |                 |&lt;----------------|
+       |                 |                 |                 | &lt;Txn-Token II&gt;  |
+</pre><a href="#section-3.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1-3"><em>Figure 1: Indirect Txn-Token Exchange</em><a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">(1) Workload A in Trust Domain I sends a token exchange request to the local AS to exchange the local Txn-Token for a cross-domain Txn-JAG. See Section 4.1.1 for the request format.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5">(2) The AS in Trust Domain I validates the request, generates and responds with the Txn-JAG, transcribing the workflow-related claims from the local Txn-Token into the Txn-JAG's claims. See Section 4.1.2 for the response format.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.1-6">(3) Workload A in Trust Domain I presents the Txn-JAG to the AS of Trust Domain II to request an access token. See Section 4.2.1 for the request format.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">(4) The AS of Trust Domain II validates the Txn-JAG and responds with an access token, transcribing the workflow-related claims from the Txn-JAG into the access token. See Section 4.2.2 for the response format.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<p id="section-3.1-8">(5) Workload A in Trust Domain I invokes Endpoint B of Trust Domain II with the received access token.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
+<p id="section-3.1-9">(6) Endpoint B presents the inbound access token to the TTS of Trust Domain II to request a Txn-Token. See Section 4.3.1 for the request format.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
+<p id="section-3.1-10">(7) The TTS of Trust Domain II mints a local Txn-Token, transcribing the workflow-related claims from the access token into the new Txn-Token. See Section 4.3.2 for the response format.<a href="#section-3.1-10" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="security-considerations">
