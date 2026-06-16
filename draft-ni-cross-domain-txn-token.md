@@ -57,7 +57,7 @@ This document describes a mechanism for Cross-Domain Transaction Tokens, which e
 
 # Introduction
 
-Due to the rise of collaboration service ecosystems and AI Agents, service interactions frequently cross domain boundaries and involve multiple service operators (e.g., enterprises, cloud providers, SaaS
+Due to the rise of collaboration service ecosystems and AI agents, service interactions frequently cross domain boundaries and involve multiple service operators (e.g., enterprises, cloud providers, SaaS
 platforms, etc.). As illustrated in {{?I-D.kiliram-agent-trust-auth-framework}}, workflows spanning multiple domains require workloads within each domain to perform subtasks and pass results to cooperatively accomplish an overall task. Moreover, to ensure end-to-end accountability, the entities and actions must remain auditable throughout the entire call chain.
 
 This requires the secure preservation and propagation of user identity, workload identities and authorization context across different domains.
@@ -73,7 +73,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 This document uses the terms "Workload", "Trust Domain", "External Endpoint", "Call Chain", and "Transaction Token Service" (TTS) defined by {{?I-D.ietf-oauth-transaction-tokens}}, as well as "Authorization Server" (AS) defined by {{RFC6749}}. Moreover, the following terms are extended or defined in this document.
 
-* Intra-domain Transaction Token (Txn-Token). A short-lived, signed JWT that provides immutable information about the user, workloads, and specific contextual attributes of the call within a trust domain, as defined in {{?I-D.ietf-oauth-transaction-tokens}}.
+* Intra-domain Transaction Token. A short-lived, signed JWT that provides immutable information about the user, workloads, and specific contextual attributes of the call within a trust domain, as defined in {{?I-D.ietf-oauth-transaction-tokens}}.
 
 * Cross-domain Transaction Token. A Txn-Token that preserves and propagates workflow-related claims from an upstream trust domain to a downstream one via identity chaining as defined in {{?I-D.ietf-oauth-identity-chaining}}.
 
