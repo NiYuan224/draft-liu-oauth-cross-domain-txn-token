@@ -77,6 +77,16 @@ This document uses the terms "Workload", "Trust Domain", "External Endpoint", "C
 
 * Transaction JWT Authorization Grant (Txn-JAG). A specialized JWT acting as an OAuth 2.0 authorization grant as defined in {{RFC7523}}. It carries the workflow-related claims, ensuring the integrity and auditability of the cross-domain call chain.
 
+# Workflows of Cross-Domain Transaction Token
+
+By combining Identity Chaining {{?I-D.ietf-oauth-identity-chaining}} and Transaction Token {{?I-D.ietf-oauth-transaction-tokens}}, this section describes two workflow modes to securely preserve and propagate workflow-related claims across different trust domains. Both modes utilize the Txn-JAG as the secure carrier between domains but differ in how the downstream domain processes it.
+
+* Mode A: Indirect Txn-Token Exchange via Intermediate Access Token. Workload A in Trust Domain I first exchanges its local Txn-Token with its own AS for a Txn-JAG that targets the AS in Trust Domain II. Then, Workload A presents that Txn-JAG to the AS in Trust Domain II to obtain an access token, and uses the access token to invoke Endpoint B in Trust Domain II. Finally, Endpoint B exchanges the access token with the local TTS to acquire a new Txn-Token in Trust Domain II.
+
+* Mode B: Direct Txn-Token Exchange. Workload A in Trust Domain I exchanges its local Txn-Token with its own AS for a Txn-JAG that targets the TTS in Trust Domain II. Then, Workload A presents the Txn-JAG directly to Endpoint B, and Endpoint B exchanges the Txn-JAG with the local TTS to obtain a new Txn-Token in Trust Domain II, thereby eliminating the intermediate round trips for the access token.
+
+The following subsections focus on the logical orchestration and context propagation of these workflows. Definitions for the request and response formats are detailed in Section 4.
+
 
 # Security Considerations
 
