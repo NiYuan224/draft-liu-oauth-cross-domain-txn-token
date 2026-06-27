@@ -2,7 +2,7 @@
 title: "Cross-domain Transaction Tokens"
 category: info
 
-docname: draft-ni-cross-domain-txn-token-latest
+docname: draft-liu-cross-domain-txn-token-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
@@ -20,19 +20,20 @@ venue:
 #  type: Working Group
 #  mail: WG@example.com
 #  arch: https://example.com/WG
-  github: "NiYuan224/draft-ni-cross-domain-txn-token"
+  github: "NiYuan224/draft-liu-cross-domain-txn-token"
   latest: "https://NiYuan224.github.io/draft-ni-cross-domain-txn-token/draft-ni-cross-domain-txn-token.html"
 
 author:
  -
+  name: Chunchi Peter Liu
+  organization: Huawei
+  email: liuchunchi@huawei.com
+
+-
   name: Yuan Ni
   organization: Huawei
   email: niyuan1@huawei.com
 
- -
-  name: Chunchi Peter Liu
-  organization: Huawei
-  email: liuchunchi@huawei.com
 
 normative:
   RFC2119:
