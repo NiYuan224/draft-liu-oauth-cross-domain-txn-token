@@ -882,31 +882,14 @@ grant_type=urn:ietf:params:oauth:grant-type:token-exchange
    established trust relationship with AS in Trust Domain I.  It
    transcribes the claims and evolves the req_wl to include Endpoint B.
 
-   {
-     "iat": 1777724900,
-     "exp": 1777724960,
-     "iss": "https://tts.domain2.example",
-     "aud": "https://domain2.example",
-     "txn": "97053963-771d-49cc-a4e3-20aad399c312",
-     "sub": "john_doe@a.org",
-     "req_wl": "workload_a,endpoint_b",
-     "rctx": {
-           "req_ip": "69.151.72.123",
-           "authn": "urn:ietf:rfc:6749"
-     },
-     "scope": "trade.stocks",
-     "tctx": {
-           "action": "BUY",
-           "ticker": "MSFT",
-           "quantity": "100",
-           "customer_type": {
-               "geo": "US",
-               "level": "VIP"
-           }
-       }
-   }
-
-   _Figure 14: Txn-Token-II Payload_
+   json { "iat": 1777724900, "exp": 1777724960, "iss":
+   "https://tts.domain2.example", "aud": "https://domain2.example",
+   "txn": "97053963-771d-49cc-a4e3-20aad399c312", "sub":
+   "john_doe@a.org", "req_wl": "workload_a,endpoint_b", "rctx": {
+   "req_ip": "69.151.72.123", "authn": "urn:ietf:rfc:6749" }, "scope":
+   "trade.stocks", "tctx": { "action": "BUY", "ticker": "MSFT",
+   "quantity": "100", "customer_type": { "geo": "US", "level": "VIP" } }
+   } _Figure 14: Txn-Token-II Payload_
 
 Acknowledgments
 
