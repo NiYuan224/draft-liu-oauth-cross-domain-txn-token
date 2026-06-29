@@ -579,7 +579,7 @@ grant_type=urn:ietf:params:oauth:grant-type:token-exchange
 
 The TTS validates the cross-domain Txn-JAG based on the pre-established trust relationship with AS in Trust Domain I. It transcribes the claims and evolves the `req_wl` to include Endpoint B.
 
-```json
+~~~
 {
   "iat": 1777724900,
   "exp": 1777724960,
@@ -603,7 +603,7 @@ The TTS validates the cross-domain Txn-JAG based on the pre-established trust re
         }
     }
 }
-```
+~~~
 *Figure 14: Txn-Token-II Payload*
 
 # Acknowledgments
