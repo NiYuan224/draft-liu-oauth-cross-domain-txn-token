@@ -313,7 +313,7 @@ Table of Contents
    Steps (1) and (2) are the same as those in Mode A.
 
    (3) Workload A in Trust Domain I presents the Txn-JAG to Endpoint B
-   of Trust Domain II.  See Section 4.5 for the transmission method.
+   of Trust Domain II.  See Section 4.2.1.3 for the transmission method.
 
    (4) Endpoint B uses Txn-JAG as the subject token to exchange for a
    local Txn-Token at its local TTS.
@@ -410,7 +410,7 @@ Table of Contents
 
    *subject_token*
    *REQUIRED.* MUST be the access token issued by the AS in Trust Domain
-   II, as obtained in Section 4.2.
+   II, as obtained Section 4.1.3.
 
    *subject_token_type*
    *REQUIRED.* MUST be urn:ietf:params:oauth:token-type:access_token.
@@ -444,7 +444,7 @@ Table of Contents
 
 4.2.1.1.  Txn-JAG Request
 
-   The request follows the same format as defined in Section 4.1.1.1,
+   The request follows the same format as defined in Section 4.1.1,
    except for the resource or audience claim:
 
    *resource*
@@ -458,8 +458,8 @@ Table of Contents
 4.2.1.2.  Txn-JAG Response
 
    The processing rules and response format are identical to those
-   described in Section 4.1.1.2, with the exception that the aud claim
-   in the issued Txn-JAG MUST identify the TTS of Trust Domain II.
+   described in Section 4.1.1, with the exception that the aud claim in
+   the issued Txn-JAG MUST identify the TTS of Trust Domain II.
 
 4.2.1.3.  Txn-JAG Transmission Methods
 
@@ -500,7 +500,7 @@ Table of Contents
 4.2.2.2.  Txn-Token Response
 
    The processing rules and response format are identical to those
-   described in Section 4.1.3.1, with the following modification for
+   described in Section 4.1.3, with the following modification for
    subject token validation:
 
    For subject token validation, the TTS in Trust Domain II MUST
@@ -554,8 +554,8 @@ Table of Contents
 5.  Operational Considerations
 
    *  AS and TTS may be operated by the same service, or not.  In the
-      former case, some procedures listed in Section 3 and 4 could be
-      merged.
+      former case, some procedures listed in Section 3 and Section 4
+      could be merged.
 
 6.  Security and Privacy Considerations
 
@@ -674,16 +674,16 @@ A.1.1.  Txn-JAG Request and Response
    "https://as.domain1.example", "sub": "john_doe@a.org", "txn":
    "97053963-771d-49cc-a4e3-20aad399c312", "req_wl":
    "apigateway.domain1.example,workload_a", "rctx": { "authn":
-   "urn:ietf:rfc:6749" }, "scope": "trade.stocks", "tctx": { "action":
-   "BUY", "ticker": "MSFT", "quantity": "100" } } _Figure 6: Txn-JAG
+   "urn:ietf:rfc:6749" [Encrypted_Information] }, "scope":
+   "trade.stocks", "tctx": { "action": "BUY", "ticker": "MSFT",
+   "quantity": "100" [Encrypted_Information] } } _Figure 6: Txn-JAG
    Payload_
 
    As shown in Figure 4 and Figure 6, the AS in Trust Domain I protects
    and evolves the claims during Txn-JAG issuance: for immutability, the
    txn claim is copied verbatim; for evolution, workload_a is appended
-   to req_wl to record the exchange point; and for privacy, sensitive
-   information like req_ip and customer_type are removed to ensure only
-   essential information reaches Trust Domain II.
+   to req_wl to record the exchange point; and for security, sensitive
+   information like req_ip and customer_type are encrypted.
 
 A.1.2.  Access Token Request and Response
 
@@ -708,9 +708,10 @@ A.1.2.  Access Token Request and Response
    "https://as.domain2.example", "sub": "john.doe.123", "txn":
    "97053963-771d-49cc-a4e3-20aad399c312", "req_wl":
    "apigateway.domain1.example,workload_a", "rctx": { "authn":
-   "urn:ietf:rfc:6749" }, "scope": "trade.stocks", "tctx": { "action":
-   "BUY", "ticker": "MSFT", "quantity": "100" } } _Figure 9: Access
-   Token Payload_
+   "urn:ietf:rfc:6749" [Encrypted_Information] }, "scope":
+   "trade.stocks", "tctx": { "action": "BUY", "ticker": "MSFT",
+   "quantity": "100" [Encrypted_Information] } } _Figure 9: Access Token
+   Payload_
 
 A.1.3.  Txn-Token Request and Response
 
@@ -723,9 +724,10 @@ A.1.3.  Txn-Token Request and Response
    "txn": "97053963-771d-49cc-a4e3-20aad399c312", "sub":
    "john_doe@a.org", "req_wl":
    "apigateway.domain1.example,workload_a,endpoint_b", "rctx": {
-   "authn": "urn:ietf:rfc:6749" }, "scope": "trade.stocks", "tctx": {
-   "action": "BUY", "ticker": "MSFT", "quantity": "100" } } _Figure 10:
-   Txn-Token-II Payload_
+   "req_ip": "69.151.72.123", "authn": "urn:ietf:rfc:6749" }, "scope":
+   "trade.stocks", "tctx": { "action": "BUY", "ticker": "MSFT",
+   "quantity": "100", "customer_type": { "geo": "US", "level": "VIP" } }
+   } _Figure 10: Txn-Token-II Payload_
 
    As can be seen from Figure 10, the TTS preserves the txn claim
    verbatim and evolves the req_wl claim, appending the identifier of
@@ -753,13 +755,15 @@ A.2.1.  Txn-JAG Request and Response
    text { "iat": 1777724830, "exp": 1777728430, "aud":
    "https://tts.domain2.example", "iss": "https://as.domain1.example",
    "sub": "john_doe@a.org", "txn": "97053963-771d-49cc-
-   a4e3-20aad399c312", "req_wl": "ey...[Encrypted_Path],workload_a",
-   "scope": "trade.stocks", "tctx": { "action": "BUY", "ticker": "MSFT",
-   "quantity": "100" } } _Figure 12: Txn-JAG Payload_
+   a4e3-20aad399c312", "req_wl": "workload_a", "rctx": { "req_ip":
+   "69.151.72.123", "authn": "urn:ietf:rfc:6749" }, "scope":
+   "trade.stocks", "tctx": { "action": "BUY", "ticker": "MSFT",
+   "quantity": "100", "customer_type": { "geo": "US", "level": "VIP" } }
+   } _Figure 12: Txn-JAG Payload_
 
    As defined in Section 4.3, the AS in Trust Domain I applies an
-   encryption strategy to the req_wl claim.  The internal path preceding
-   workload_a is encrypted to protect the internal topology of Domain I.
+   removal strategy to the req_wl claim.  The internal path preceding
+   workload_a is removed to protect the internal topology of Domain I.
 
 A.2.2.  Txn-Token Request and Response
 
@@ -783,11 +787,11 @@ A.2.2.  Txn-Token Request and Response
    text { "iat": 1777724900, "exp": 1777724960, "iss":
    "https://tts.domain2.example", "aud": "https://domain2.example",
    "txn": "97053963-771d-49cc-a4e3-20aad399c312", "sub":
-   "john_doe@a.org", "req_wl":
-   "ey...[Encrypted_Path],workload_a,endpoint_b", "rctx": { "authn":
-   "urn:ietf:rfc:6749" }, "scope": "trade.stocks", "tctx": { "action":
-   "BUY", "ticker": "MSFT", "quantity": "100" } } _Figure 14: Txn-Token-
-   II Payload_
+   "john_doe@a.org", "req_wl": "workload_a,endpoint_b", "rctx": {
+   "req_ip": "69.151.72.123", "authn": "urn:ietf:rfc:6749" }, "scope":
+   "trade.stocks", "tctx": { "action": "BUY", "ticker": "MSFT",
+   "quantity": "100", "customer_type": { "geo": "US", "level": "VIP" } }
+   } _Figure 14: Txn-Token-II Payload_
 
 Acknowledgments
 
