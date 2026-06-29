@@ -90,7 +90,7 @@ By combining Identity Chaining {{?I-D.ietf-oauth-identity-chaining}} and Transac
 
 * Mode B: Direct Txn-Token Exchange. Workload A in Trust Domain I exchanges its local Txn-Token with its own AS for a Txn-JAG that targets the TTS in Trust Domain II. Then, Workload A presents the Txn-JAG directly to Endpoint B, and Endpoint B exchanges the Txn-JAG with the local TTS to obtain a new Txn-Token in Trust Domain II, thereby eliminating the intermediate round trips for the access token.
 
-The following subsections focus on the logical orchestration and context propagation of these workflows. Definitions for the request and response formats are detailed in [Section 4](#reqs).
+The following subsections focus on the logical orchestration and context propagation of these workflows. Definitions for the request and response formats are detailed in {{reqs}}.
 
 ## Mode A: Indirect Txn-Token Exchange
 
@@ -189,7 +189,7 @@ Steps (1) and (2) are the same as those in Mode A.
 
 (5) The TTS of Trust Domain II mints a local Txn-Token, transcribing the workflow-related context from the Txn-JAG into the local Txn-Token's claims.
 
-# Requests and Responses {:#reqs}
+# Requests and Responses {#reqs}
 The formats of requests and responses included in Section 3 are detailed in this section. To avoid redundancy, all illustrative examples are provided in Appendix A.
 
 ## Mode A: Indirect Txn-Token Exchange
