@@ -2,8 +2,8 @@
 
 
 
-Network Working Group                                              Y. Ni
-Internet-Draft                                                 C. P. Liu
+Network Working Group                                          C. P. Liu
+Internet-Draft                                                     Y. Ni
 Intended status: Informational                                    Huawei
 Expires: 31 December 2026                                   29 June 2026
 
@@ -561,7 +561,7 @@ Table of Contents
 
    *  As Domain I and II may have public Internet in between, the
       correct and confidential passing of tctx and rctx may require
-      encryption or masking technique.
+      encryption or masking techniques.
 
 7.  IANA Considerations
 
@@ -799,11 +799,11 @@ Acknowledgments
 
 Authors' Addresses
 
-   Yuan Ni
-   Huawei
-   Email: niyuan1@huawei.com
-
-
    Chunchi Peter Liu
    Huawei
    Email: liuchunchi@huawei.com
+
+
+   Yuan Ni
+   Huawei
+   Email: niyuan1@huawei.com
