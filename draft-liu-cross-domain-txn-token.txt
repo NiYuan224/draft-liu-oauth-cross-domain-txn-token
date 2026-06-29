@@ -343,8 +343,8 @@ Table of Contents
 
    The parameters for the Txn-JAG request build upon the definitions in
    Section 2.3.1 of [I-D.ietf-oauth-identity-chaining] and [RFC8693].
-   While claim types remain consistent with these specifications, the
-   values of certain claims are required as follows:
+   While parameter types remain consistent with these specifications,
+   the values of certain parameters are required as follows:
 
    *resource*
    *REQUIRED* if audience is not set.  It MUST be the URI of the AS in
@@ -445,7 +445,7 @@ Table of Contents
 4.2.1.1.  Txn-JAG Request
 
    The request follows the same format as defined in Section 4.1.1,
-   except for the resource or audience claim:
+   except for the resource or audience parameter:
 
    *resource*
    *REQUIRED.* if audience is not set.  It MUST be the URI of the TTS in
