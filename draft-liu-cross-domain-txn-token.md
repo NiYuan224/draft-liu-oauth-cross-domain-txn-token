@@ -352,7 +352,7 @@ Workload A in Trust Domain I performs token exchange with the AS in Trust Domain
 
    grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
    &resource=https%3A%2F%2Fas.domain2.example%2Fauth
-   &subject_token=[Encoded Txn-Token-I]
+   &subject_token=<Encoded Txn-Token-I>
    &subject_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Atxn_token
 ~~~
 *Figure 3: Txn-JAG Request*
@@ -394,7 +394,7 @@ HTTP/1.1 200 OK
    Cache-Control: no-cache, no-store
 
    {
-     "access_token":[Encoded Txn-JAG],
+     "access_token":<Encoded Txn-JAG>,
      "token_type":"N_A",
      "issued_token_type":"urn:ietf:params:oauth:token-type:jwt",
      "expires_in":60
@@ -413,14 +413,14 @@ HTTP/1.1 200 OK
   "req_wl": "apigateway.domain1.example,workload_a",
   "rctx": {
     "authn": "urn:ietf:rfc:6749"
-    [Encrypted_Information]
+    <Encrypted_Information>
   },
   "scope": "trade.stocks",
   "tctx": {
     "action": "BUY",
     "ticker": "MSFT",
     "quantity": "100"
-    [Encrypted_Information]
+    <Encrypted_Information>
   }
 }
 ~~~
@@ -437,7 +437,7 @@ Workload A presents the Txn-JAG as an assertion to the AS of Trust Domain II to 
     Content-Type: application/x-www-form-urlencoded
 
     grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer
-    &assertion=[Encoded Txn-JAG]
+    &assertion=<Encoded Txn-JAG>
 ~~~
 *Figure 7: Access Token Request*
 
@@ -466,14 +466,14 @@ Workload A presents the Txn-JAG as an assertion to the AS of Trust Domain II to 
   "req_wl": "apigateway.domain1.example,workload_a",
   "rctx": {
     "authn": "urn:ietf:rfc:6749"
-    [Encrypted_Information]
+    <Encrypted_Information>
   },
   "scope": "trade.stocks",
   "tctx": {
     "action": "BUY",
     "ticker": "MSFT",
     "quantity": "100"
-    [Encrypted_Information]
+    <Encrypted_Information>
   }
 }
 ~~~
@@ -524,7 +524,7 @@ Content-Type: application/x-www-form-urlencoded
 
 grant_type=urn:ietf:params:oauth:grant-type:token-exchange
 &resource=https://tts.domain2.example
-&subject_token=[Encoded Txn-Token-I the same in Figure 4]
+&subject_token=<Encoded Txn-Token-I the same in Figure 4>
 &subject_token_type=urn:ietf:params:oauth:token-type:txn_token
 ~~~
 *Figure 11: Txn-JAG Request*
@@ -571,7 +571,7 @@ Content-Type: application/x-www-form-urlencoded
 
 grant_type=urn:ietf:params:oauth:grant-type:token-exchange
 &requested_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Atxn-token
-&subject_token=[Encoded Txn-JAG]
+&subject_token=<Encoded Txn-JAG>
 &scope=trade.stocks
 &subject_token_type=urn:ietf:params:oauth:token-type:jwt-bearer
 ~~~
