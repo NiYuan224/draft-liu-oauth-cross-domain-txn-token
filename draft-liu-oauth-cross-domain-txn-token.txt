@@ -14,7 +14,7 @@ Expires: 4 January 2027                                      3 July 2026
 Abstract
 
    This document describes a mechanism for Cross-Domain Transaction
-   Tokens, which enables the safe maintenance and propagation of user
+   Tokens, which enables the safe preservation and propagation of user
    identity, workload identities, and authorization context across
    multiple trust domains.
 
