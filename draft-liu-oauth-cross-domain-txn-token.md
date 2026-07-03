@@ -21,8 +21,8 @@ venue:
 #  type: Working Group
 #  mail: oauth@ietf.org
 #  arch: https://example.com/WG
-  github: "NiYuan224/draft-liu-cross-domain-txn-token"
-  latest: "https://NiYuan224.github.io/draft-liu-cross-domain-txn-token/draft-liu-cross-domain-txn-token.html"
+  github: "NiYuan224/draft-liu-oauth-cross-domain-txn-token"
+  latest: "https://NiYuan224.github.io/draft-liu-oauth-cross-domain-txn-token/draft-liu-oauth-cross-domain-txn-token.html"
 
 author:
  -
