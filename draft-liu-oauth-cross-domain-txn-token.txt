@@ -5,11 +5,11 @@
 Network Working Group                                          C. P. Liu
 Internet-Draft                                                     Y. Ni
 Intended status: Informational                                    Huawei
-Expires: 1 January 2027                                     30 June 2026
+Expires: 4 January 2027                                      3 July 2026
 
 
                     Cross-domain Transaction Tokens
-                draft-liu-cross-domain-txn-token-latest
+             draft-liu-oauth-cross-domain-txn-token-latest
 
 Abstract
 
@@ -26,7 +26,7 @@ About This Document
    https://NiYuan224.github.io/draft-liu-cross-domain-txn-token/draft-
    liu-cross-domain-txn-token.html.  Status information for this
    document may be found at https://datatracker.ietf.org/doc/draft-liu-
-   cross-domain-txn-token/.
+   oauth-cross-domain-txn-token/.
 
    Source for this draft and an issue tracker can be found at
    https://github.com/NiYuan224/draft-liu-cross-domain-txn-token.
@@ -46,7 +46,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 January 2027.
+   This Internet-Draft will expire on 4 January 2027.
 
 Copyright Notice
 
