@@ -2,7 +2,7 @@
 title: "Cross-domain Transaction Tokens"
 category: info
 
-docname: draft-liu-cross-domain-txn-token-latest
+docname: draft-liu-oauth-cross-domain-txn-token-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
