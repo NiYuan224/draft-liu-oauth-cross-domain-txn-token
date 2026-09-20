@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-17T02:38:00.360215+00:00",
+  "timestamp": "2026-09-20T02:35:36.713560+00:00",
   "repo": "NiYuan224/draft-liu-oauth-cross-domain-txn-token",
   "labels": [
     {
@@ -49,7 +49,24 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 3,
+      "id": "I_kwDOS71yHc8AAAABR5yaKg",
+      "title": "\u00a74.1.1.2 / \u00a74.3: claims transcription permits altering tctx values",
+      "url": "https://github.com/NiYuan224/draft-liu-oauth-cross-domain-txn-token/issues/3",
+      "state": "OPEN",
+      "author": "arjun2075",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Reading -00 (both Mode A and Mode B). One observation on claims transcription, plus proposed text. I might be misreading the interaction between \u00a74.1.1.2 and \u00a74.3 \u2014 if redaction-only is already the intent, this reduces to making that explicit.\nObservation\n\u00a74.1.1.2 has the AS in Trust Domain I SHOULD transcribe the workflow-related claims into the Txn-JAG, and during that transcription it MAY add, remove or change the claims. \u00a74.3 then gives specific protections to two of the four workflow-related claims:\n\t\u2022\ttxn \u2014 SHOULD NOT be modified or regenerated\n\t\u2022\treq_wl \u2014 SHOULD evolve, appending the exchanging workload\n\t\u2022\tData Minimization \u2014 claims not required downstream COULD be removed or redacted\nNo rule constrains the values carried inside tctx. [I-D.ietf-oauth-transaction-tokens] describes tctx as asserting the details that remain immutable through the Call Chain, and distinguishes it from rctx, which carries environmental values about the request. That immutability is scoped to a single trust domain's call chain. At the boundary, \u00a74.1.1.2 permits the transcribing AS to change those values, and the resulting Txn-JAG and downstream Txn-Token are each validly signed by their own issuer.\nUsing the draft's own example\nFigure 4 shows Txn-Token-I with tctx = {action: BUY, ticker: MSFT, quantity: 100} and scope: trade.stocks. Figure 6 shows the Txn-JAG that AS-I issues from it.\nA conformant AS-I may issue a Txn-JAG in which quantity reads 1000, or ticker differs, or quantity is absent so a Domain II default applies. Every signature verifies. txn is preserved verbatim per \u00a74.3. req_wl evolves per \u00a74.3. scope remains trade.stocks across Figures 4, 6, 9, 12 and 14, so the coarse scope channel is unchanged throughout while the fine-grained channel moves. Domain II ends up with a well-formed Txn-Token-II authorizing a different trade than the one authorized in Domain I, and cannot detect the difference from any normative artifact this draft defines.\nMode B has the same property, with the TTS in Domain II transcribing directly from the Txn-JAG (\u00a74.2.2.2 \u2192 \u00a74.3).\nSince \u00a76 currently addresses tctx and rctx confidentiality between domains, it is worth separating the two concerns: encryption and masking protect these claims from observers on the path, and neither constrains the transcribing AS or TTS \u2014 which is the entity \u00a74.1.1.2 authorizes to change them.\nThis is a spec-text observation about composed mechanisms, not a claim about any implementation or deployment, and not a claim that the base specifications are defective.\nProposed changes\n\t1.\t\u00a74.3 \u2014 add a tctx rule alongside the txn and req_wl rules:\n\t\u2022\tAn AS or TTS MUST NOT alter the value of any tctx claim it forwards.\n\t\u2022\tClaims MAY be omitted under Data Minimization; omission is the only permitted transformation.\n\t\u2022\tAn AS or TTS MUST NOT introduce tctx claims asserting authority broader than the subject token asserts.\n\t\u2022\tWhere a constraint the downstream domain requires cannot be forwarded, the request SHOULD be refused rather than a token issued without it.\n\t2.\t\u00a74.1.1.2 \u2014 qualify the add/remove/change permission so it does not reach tctx values, or cross-reference the \u00a74.3 rule.\n\t3.\t\u00a76 \u2014 add a consideration separating semantic integrity from confidentiality, per the note above.\nRelated\nThe same question arises in draft-fletcher-oauth-txn-token-chaining-profile-00, where tctx is absent from the \u00a77 transcription rules entirely. I have opened gffletch/tt_xdomain#20 there proposing a \u00a77.5, and this issue is the counterpart for the transcription rules in this draft. The two drafts take different routes across the boundary, so the wording will differ, but the invariant is the same: fine-grained constraints should be redaction-only, never altered or widened.\nEditorial\nNormative references cite draft-ietf-oauth-identity-chaining-16 and draft-ietf-oauth-transaction-tokens-08. Current revisions are -17 and -11, and the tctx section numbering has moved in -11.\nI have negative conformance vectors covering these transitions and would be glad to contribute text or test cases if that is useful.",
+      "createdAt": "2026-09-18T06:27:52Z",
+      "updatedAt": "2026-09-18T06:27:52Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
   "pulls": [
     {
       "number": 1,
