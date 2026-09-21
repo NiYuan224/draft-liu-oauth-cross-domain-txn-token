@@ -5,7 +5,7 @@
 Network Working Group                                          C. P. Liu
 Internet-Draft                                                     Y. Ni
 Intended status: Informational                                    Huawei
-Expires: 4 January 2027                                      3 July 2026
+Expires: 25 March 2027                                 21 September 2026
 
 
                     Cross-domain Transaction Tokens
@@ -46,7 +46,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 January 2027.
+   This Internet-Draft will expire on 25 March 2027.
 
 Copyright Notice
 
@@ -273,7 +273,7 @@ Table of Contents
    overhead can become prohibitive.
 
    An opportunity for optimization arises from the flexibility defined
-   in Section 5.1 of the Transaction
+   in Section 11.1 of the Transaction
    Token[I-D.ietf-oauth-transaction-tokens], which allows the
    subject_token to be "any other format that is understood by the TTS".
    This enables a TTS to directly accept a Txn-JAG issued by the
@@ -405,7 +405,7 @@ Table of Contents
 4.1.3.1.  Txn-Token Request
 
    The parameters for the Txn-Token request follow the definitions in
-   Section 12.1 of [I-D.ietf-oauth-transaction-tokens], the following
+   Section 11.1 of [I-D.ietf-oauth-transaction-tokens], the following
    requirements apply to the subject_token and subject_token_type:
 
    *subject_token*
@@ -417,8 +417,8 @@ Table of Contents
 
 4.1.3.2.  Txn-Token Response
 
-   The processing rules and response formats defined in Sections 12.3
-   and 12.4 of [I-D.ietf-oauth-transaction-tokens] apply, with the
+   The processing rules and response formats defined in Sections 11.3
+   and 11.4 of [I-D.ietf-oauth-transaction-tokens] apply, with the
    following modifications:
 
    *  For subject token validation, the TTS in Trust Domain II MUST
@@ -486,7 +486,7 @@ Table of Contents
 4.2.2.1.  Txn-Token Request
 
    The parameters for the Txn-Token request follow the definitions in
-   Section 12.1 of [I-D.ietf-oauth-transaction-tokens].  The following
+   Section 11.1 of [I-D.ietf-oauth-transaction-tokens].  The following
    requirements apply:
 
    *subject_token*
@@ -605,16 +605,16 @@ Table of Contents
               Schwenkschuster, A., Kasselman, P., Burgin, K., Jenkins,
               M. J., Campbell, B., and A. Parecki, "OAuth Identity and
               Authorization Chaining Across Domains", Work in Progress,
-              Internet-Draft, draft-ietf-oauth-identity-chaining-16, 26
-              June 2026, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-oauth-identity-chaining-16>.
+              Internet-Draft, draft-ietf-oauth-identity-chaining-17, 19
+              July 2026, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-oauth-identity-chaining-17>.
 
    [I-D.ietf-oauth-transaction-tokens]
               Tulshibagwale, A., Fletcher, G., and P. Kasselman,
               "Transaction Tokens", Work in Progress, Internet-Draft,
-              draft-ietf-oauth-transaction-tokens-08, 2 March 2026,
+              draft-ietf-oauth-transaction-tokens-11, 30 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-oauth-
-              transaction-tokens-08>.
+              transaction-tokens-11>.
 
    [I-D.kiliram-agent-trust-auth-framework]
               King, D., Ramdhany, R., and P. C. Liu, "A Trust and

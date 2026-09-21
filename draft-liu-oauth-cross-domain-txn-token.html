@@ -10,25 +10,25 @@
 <meta content="
        This document describes a mechanism for Cross-Domain Transaction Tokens, which enables the safe preservation and propagation of user identity, workload identities, and authorization context across multiple trust domains. 
     " name="description">
-<meta content="xml2rfc 3.34.0" name="generator">
+<meta content="xml2rfc 3.34.1" name="generator">
 <meta content="Identity Chaining" name="keyword">
 <meta content="Transaction Tokens" name="keyword">
 <meta content="Cross-Domain" name="keyword">
 <meta content="draft-liu-oauth-cross-domain-txn-token-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.34.0
-    Python 3.14.5
-    ConfigArgParse 1.7.5
+  xml2rfc 3.34.1
+    Python 3.14.7
+    ConfigArgParse 1.7.7
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.0
+    platformdirs 4.11.10
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.2
+    wcwidth 0.8.4
 -->
 <link href="draft-liu-oauth-cross-domain-txn-token.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -64,7 +64,6 @@
   src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: italic;
@@ -113,7 +112,6 @@
   src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: normal;
@@ -178,7 +176,6 @@
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
 }
 
 @font-face {
@@ -1047,11 +1044,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Cross-domain Transaction Tokens</td>
-<td class="right">July 2026</td>
+<td class="right">September 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu &amp; Ni</td>
-<td class="center">Expires 4 January 2027</td>
+<td class="center">Expires 25 March 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1061,12 @@ svg {
 <dd class="internet-draft">draft-liu-oauth-cross-domain-txn-token-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-03" class="published">3 July 2026</time>
+<time datetime="2026-09-21" class="published">21 September 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-04">4 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-03-25">25 March 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1118,7 +1115,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 4 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 March 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1363,7 +1360,7 @@ platforms, etc.). As illustrated in <span>[<a href="#I-D.kiliram-agent-trust-aut
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-mode-b-direct-txn-token-exc" class="section-name selfRef">Mode B: Direct Txn-Token Exchange</a>
         </h3>
 <p id="section-3.2-1">While Mode A provides a straightforward integration of Identity Chaining procedures with Transaction Tokens procedures, which does not create protocol-level changes, it introduces multiple cross-domain round trips that can significantly increase latency. As illustrated in Figure 1, steps (3) through (5) require at least three cross-domain round-trips: presenting the Txn-JAG to the downstream AS to obtain an access token, invoking the target endpoint with that token, and subsequently exchanging it for a local Txn-Token. In distributed and high-throughput environments, this operational overhead can become prohibitive.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">An opportunity for optimization arises from the flexibility defined in Section 5.1 of the Transaction Token<span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>, which allows the subject_token to be "any other format that is understood by the TTS". This enables a TTS to directly accept a Txn-JAG issued by the upstream AS as the subject token in a Txn-Token request.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">An opportunity for optimization arises from the flexibility defined in Section 11.1 of the Transaction Token<span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>, which allows the subject_token to be "any other format that is understood by the TTS". This enables a TTS to directly accept a Txn-JAG issued by the upstream AS as the subject token in a Txn-Token request.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.2-3">Thus, Mode B reduces cross-domain round trips from three to one by allowing the TTS in Trust Domain II to accept the Txn-JAG directly as the subject token in a Txn-Token request. This requires a pre-established trust relationship between the AS in Trust Domain I and the TTS in Trust Domain II. The workflow is illustrated in Figure 2.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.2-4">
 <pre>
@@ -1492,7 +1489,7 @@ platforms, etc.). As illustrated in <span>[<a href="#I-D.kiliram-agent-trust-aut
             <h5 id="name-txn-token-request">
 <a href="#section-4.1.3.1" class="section-number selfRef">4.1.3.1. </a><a href="#name-txn-token-request" class="section-name selfRef">Txn-Token Request</a>
             </h5>
-<p id="section-4.1.3.1-1">The parameters for the Txn-Token request follow the definitions in Section 12.1 of <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>, the following requirements apply to the subject_token and subject_token_type:<a href="#section-4.1.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1.3.1-1">The parameters for the Txn-Token request follow the definitions in Section 11.1 of <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>, the following requirements apply to the subject_token and subject_token_type:<a href="#section-4.1.3.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.1.3.1-2"><strong>subject_token</strong><br>
               <strong>REQUIRED.</strong> MUST be the access token issued by the AS in Trust Domain II, as obtained <a href="#exchangeforTxn" class="auto internal xref">Section 4.1.3</a>.<a href="#section-4.1.3.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.1.3.1-3"><strong>subject_token_type</strong><br>
@@ -1504,7 +1501,7 @@ platforms, etc.). As illustrated in <span>[<a href="#I-D.kiliram-agent-trust-aut
             <h5 id="name-txn-token-response">
 <a href="#section-4.1.3.2" class="section-number selfRef">4.1.3.2. </a><a href="#name-txn-token-response" class="section-name selfRef">Txn-Token Response</a>
             </h5>
-<p id="section-4.1.3.2-1">The processing rules and response formats defined in Sections 12.3 and 12.4 of <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span> apply, with the following modifications:<a href="#section-4.1.3.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.1.3.2-1">The processing rules and response formats defined in Sections 11.3 and 11.4 of <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span> apply, with the following modifications:<a href="#section-4.1.3.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1.3.2-2.1">
                 <p id="section-4.1.3.2-2.1.1">For subject token validation, the TTS in Trust Domain II MUST validate the access token issued by its local AS.<a href="#section-4.1.3.2-2.1.1" class="pilcrow">¶</a></p>
@@ -1574,7 +1571,7 @@ platforms, etc.). As illustrated in <span>[<a href="#I-D.kiliram-agent-trust-aut
             <h5 id="name-txn-token-request-2">
 <a href="#section-4.2.2.1" class="section-number selfRef">4.2.2.1. </a><a href="#name-txn-token-request-2" class="section-name selfRef">Txn-Token Request</a>
             </h5>
-<p id="section-4.2.2.1-1">The parameters for the Txn-Token request follow the definitions in Section 12.1 of <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>. The following requirements apply:<a href="#section-4.2.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.2.1-1">The parameters for the Txn-Token request follow the definitions in Section 11.1 of <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>. The following requirements apply:<a href="#section-4.2.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.2.2.1-2"><strong>subject_token</strong><br>
               <strong>REQUIRED.</strong> MUST be the Txn-JAG issued by the AS in Trust Domain I, as obtained in Section 4.2.1 and presented to Endpoint B via the method in Section 4.2.1.3.<a href="#section-4.2.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.2.2.1-3"><strong>subject_token_type</strong><br>
@@ -1699,11 +1696,11 @@ platforms, etc.). As illustrated in <span>[<a href="#I-D.kiliram-agent-trust-aut
 <dl class="references">
 <dt id="I-D.ietf-oauth-identity-chaining">[I-D.ietf-oauth-identity-chaining]</dt>
         <dd>
-<span class="refAuthor">Schwenkschuster, A.</span>, <span class="refAuthor">Kasselman, P.</span>, <span class="refAuthor">Burgin, K.</span>, <span class="refAuthor">Jenkins, M. J.</span>, <span class="refAuthor">Campbell, B.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth Identity and Authorization Chaining Across Domains"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-identity-chaining-16</span>, <time datetime="2026-06-26" class="refDate">26 June 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-16">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-16</a>&gt;</span>. </dd>
+<span class="refAuthor">Schwenkschuster, A.</span>, <span class="refAuthor">Kasselman, P.</span>, <span class="refAuthor">Burgin, K.</span>, <span class="refAuthor">Jenkins, M. J.</span>, <span class="refAuthor">Campbell, B.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth Identity and Authorization Chaining Across Domains"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-identity-chaining-17</span>, <time datetime="2026-07-19" class="refDate">19 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-17">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-17</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-oauth-transaction-tokens">[I-D.ietf-oauth-transaction-tokens]</dt>
         <dd>
-<span class="refAuthor">Tulshibagwale, A.</span>, <span class="refAuthor">Fletcher, G.</span>, and <span class="refAuthor">P. Kasselman</span>, <span class="refTitle">"Transaction Tokens"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-transaction-tokens-08</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-transaction-tokens-08">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-transaction-tokens-08</a>&gt;</span>. </dd>
+<span class="refAuthor">Tulshibagwale, A.</span>, <span class="refAuthor">Fletcher, G.</span>, and <span class="refAuthor">P. Kasselman</span>, <span class="refTitle">"Transaction Tokens"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-transaction-tokens-11</span>, <time datetime="2026-07-30" class="refDate">30 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-transaction-tokens-11">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-transaction-tokens-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.kiliram-agent-trust-auth-framework">[I-D.kiliram-agent-trust-auth-framework]</dt>
       <dd>
