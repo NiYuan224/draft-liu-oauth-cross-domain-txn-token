@@ -150,7 +150,7 @@ This mode follows the classic identity chaining workflow {{?I-D.ietf-oauth-ident
 ## Mode B: Direct Txn-Token Exchange {#modeb}
 While Mode A provides a straightforward integration of Identity Chaining procedures with Transaction Tokens procedures, which does not create protocol-level changes, it introduces multiple cross-domain round trips that can significantly increase latency. As illustrated in Figure 1, steps (3) through (5) require at least three cross-domain round-trips: presenting the Txn-JAG to the downstream AS to obtain an access token, invoking the target endpoint with that token, and subsequently exchanging it for a local Txn-Token. In distributed and high-throughput environments, this operational overhead can become prohibitive.
 
-An opportunity for optimization arises from the flexibility defined in Section 5.1 of the Transaction Token{{?I-D.ietf-oauth-transaction-tokens}}, which allows the subject_token to be "any other format that is understood by the TTS". This enables a TTS to directly accept a Txn-JAG issued by the upstream AS as the subject token in a Txn-Token request.
+An opportunity for optimization arises from the flexibility defined in Section 11.1 of the Transaction Token{{?I-D.ietf-oauth-transaction-tokens}}, which allows the subject_token to be "any other format that is understood by the TTS". This enables a TTS to directly accept a Txn-JAG issued by the upstream AS as the subject token in a Txn-Token request.
 
 Thus, Mode B reduces cross-domain round trips from three to one by allowing the TTS in Trust Domain II to accept the Txn-JAG directly as the subject token in a Txn-Token request. This requires a pre-established trust relationship between the AS in Trust Domain I and the TTS in Trust Domain II. The workflow is illustrated in Figure 2.
 
@@ -245,7 +245,7 @@ Workload A in Trust Domain I performs a token exchange with the TTS in Trust Dom
 
 #### Txn-Token Request
 
-The parameters for the Txn-Token request follow the definitions in Section 12.1 of {{?I-D.ietf-oauth-transaction-tokens}}, the following requirements apply to the subject_token and subject_token_type:
+The parameters for the Txn-Token request follow the definitions in Section 11.1 of {{?I-D.ietf-oauth-transaction-tokens}}, the following requirements apply to the subject_token and subject_token_type:
 
 **subject_token**<br>
 **REQUIRED.** MUST be the access token issued by the AS in Trust Domain II, as obtained {{exchangeforTxn}}.
@@ -254,7 +254,7 @@ The parameters for the Txn-Token request follow the definitions in Section 12.1 
 **REQUIRED.** MUST be urn:ietf:params:oauth:token-type:access_token.
 
 #### Txn-Token Response
-The processing rules and response formats defined in Sections 12.3 and 12.4 of {{?I-D.ietf-oauth-transaction-tokens}} apply, with the following modifications:
+The processing rules and response formats defined in Sections 11.3 and 11.4 of {{?I-D.ietf-oauth-transaction-tokens}} apply, with the following modifications:
 
 * For subject token validation, the TTS in Trust Domain II MUST validate the access token issued by its local AS.
 
@@ -292,7 +292,7 @@ In {{RFC7523}} and {{?I-D.ietf-oauth-identity-chaining}}, the JAG is carried by 
 Endpoint B performs a token exchange with the TTS in Trust Domain II to obtain a local Txn-Token in Trust Domain II, using the Txn-JAG as the subject_token.
 
 #### Txn-Token Request
-The parameters for the Txn-Token request follow the definitions in Section 12.1 of {{?I-D.ietf-oauth-transaction-tokens}}. The following requirements apply:
+The parameters for the Txn-Token request follow the definitions in Section 11.1 of {{?I-D.ietf-oauth-transaction-tokens}}. The following requirements apply:
 
 **subject_token**<br>
 **REQUIRED.** MUST be the Txn-JAG issued by the AS in Trust Domain I, as obtained in Section 4.2.1 and presented to Endpoint B via the method in Section 4.2.1.3.
