@@ -561,16 +561,15 @@ The AS in Domain I transcribes the claims. In the issued Txn-JAG, the `aud` is s
         "action": "BUY",
         "ticker": "MSFT",
         "quantity": "100",
-        "customer_type": {
-            "geo": "US",
-            "level": "VIP"
         }
     }
 }
 ~~~
 *Figure 12: Txn-JAG Payload*
 
-As defined in {{trans}}, the AS in Trust Domain I applies a removal strategy to the `req_wl` claim. The internal path preceding workload_a is removed to protect the internal topology of Domain I. The removal strategy in this example affects only `req_wl`: the `tctx` authorization details are carried over unchanged from Figure 4, and therefore trivially satisfy the non-expansion requirement in {{trans}}.
+As defined in {{trans}}, the AS in Trust Domain I applies a removal strategy to the `req_wl` claim. The internal path preceding `workload_a` is removed to protect the internal topology of Domain I. 
+
+In `tctx`, only `customer_type` is removed because it is not required by Domain II for authorization enforcement, while `action`, `ticker`, and `quantity` remain unchanged. Therefore, the resulting authorization is not broadened and satisfies the non-expansion requirement in {{trans}}.
 
 ### Txn-Token Request and Response
 
@@ -608,11 +607,7 @@ The TTS validates the cross-domain Txn-JAG based on the pre-established trust re
   "tctx": {
         "action": "BUY",
         "ticker": "MSFT",
-        "quantity": "100",
-        "customer_type": {
-            "geo": "US",
-            "level": "VIP"
-        }
+        "quantity": "100"
     }
 }
 ~~~
