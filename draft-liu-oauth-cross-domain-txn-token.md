@@ -567,7 +567,7 @@ The AS in Domain I transcribes the claims. In the issued Txn-JAG, the `aud` is s
 ~~~
 *Figure 12: Txn-JAG Payload*
 
-As defined in {{trans}}, the AS in Trust Domain I applies a removal strategy to the `req_wl` claim. The internal path preceding `workload_a` is removed to protect the internal topology of Domain I. 
+As defined in {{trans}}, the AS in Trust Domain I applies a removal strategy to the `req_wl` claim. The internal path preceding `workload_a` is removed to protect the internal topology of Domain I.
 
 In `tctx`, only `customer_type` is removed because it is not required by Domain II for authorization enforcement, while `action`, `ticker`, and `quantity` remain unchanged. Therefore, the resulting authorization is not broadened and satisfies the non-expansion requirement in {{trans}}.
 
