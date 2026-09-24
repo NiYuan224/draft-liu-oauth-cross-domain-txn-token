@@ -220,7 +220,7 @@ The parameters for the Txn-JAG request build upon the definitions in Section 2.3
 #### Txn-JAG Response
 The processing rules and response format defined in Sections 2.3.2 and 2.3.3 of {{?I-D.ietf-oauth-identity-chaining}} apply, with the following modifications:
 
-* The AS in Trust Domain I SHOULD transcribe the workflow-related claims from the Txn-Token to the Txn-JAG's claims. During this transcription, The AS in Trust Domain I MAY add, remove, or change the claims. See Claims Transcription ({{trans}}).
+* The AS in Trust Domain I SHOULD transcribe the workflow-related claims from the Txn-Token to the Txn-JAG's claims. During this transcription, the AS in Trust Domain I MAY add, remove, or change claims, subject to the claim-specific transcription requirements in {{trans}}.
 
 ### Cross-Domain Assertion {#exchangeforAT}
 
@@ -314,11 +314,17 @@ Claims transcription across trust domains SHOULD ensure that the workflow-relate
 
 * Preserving the `txn` claim. The `txn` claim serves as the immutable unique identifier for the cross-domain transaction. Both the AS and TTS SHOULD NOT modify or regenerate the `txn` value during transcription. It SHOULD be copied from the subject_token to the issued token to ensure auditability and accountability across different domains. To avoid collisions without a centralized namespace, the `txn` value can be generated as a high-entropy string or prefixed with a domain identifier.
 
+* Non-expanding `tctx`. The `tctx` claim contains the authorization details of the transaction. An AS or TTS MAY add, remove, or modify `tctx` values only when the authorization represented after transcription is semantically equivalent to, or narrower than, the authorization represented by the subject token. An AS or TTS MUST NOT perform a `tctx` transformation that expands the scope of permitted actions. Every action permitted by the transcribed `tctx` MUST already have been permitted by the subject token. If the AS or TTS cannot determine that a proposed transformation is non-expanding, it MUST NOT perform that transformation.
+
+    A transformation that replaces one transaction with a different, incomparable transaction is not a narrowing, even when the coarse-grained `scope` is unchanged. For example, where `ticker` and `quantity` denote the exact parameters of the transaction being authorized, changing `ticker` from one security to another, or changing `quantity` from one exact value to another, does not reduce the set of permitted actions and is therefore not permitted by this rule. Narrowing is permitted only where the defined semantics of the member establish that the resulting authorization is a subset of the original, such as a member explicitly defined as an upper bound.
+
+    Removal or redaction of a `tctx` value is subject to the same non-expansion requirement. In particular, a value MUST NOT be omitted when its absence would cause a downstream component to apply a default or fallback that permits actions not permitted by the subject token. If a constraint required to preserve non-expansion cannot be conveyed to the downstream trust domain, the request SHOULD be rejected rather than issuing a token with that constraint omitted or weakened.
+
 * Evolving the `req_wl` claim. The `req_wl` SHOULD identify all the workloads that requested or exchanged tokens throughout the cross-domain transaction. Specifically, the AS in Trust Domain I SHOULD add the identifier of Workload A to the `req_wl` in the issued Txn-JAG. The TTS in Trust Domain II SHOULD add the identifier of Endpoint B to `req_wl` in the issued Txn-Token in Trust Domain II. This ensures that every point where claims may change is recorded, providing a trail of how the claims reached its current state.
 
 * Data Minimization. The processing or `req_wl` may exist privacy concerns that exposing topology of Domain I. The AS in Trust Domain I MAY apply security and privacy strategies to workflow-related claims when issuing the Txn-JAG. Such measures include but not limited to Removal.
 
-    * Removal. Claims related to completed tasks or not required by downstream trust domains COULD be removed or redacted. If certain claims are required for end-to-end auditing, Domain I MAY take proper logs before removal.
+    * Removal. Claims related to completed tasks or not required by downstream trust domains COULD be removed or redacted. If certain claims are required for end-to-end auditing, Domain I MAY take proper logs before removal. Removal or redaction of `tctx` values is additionally constrained by the non-expansion requirement above: a `tctx` value MUST NOT be removed or redacted on data minimization grounds when its absence would broaden the authorization enforced downstream.
 
 # Operational Considerations {#ops}
 
@@ -327,6 +333,8 @@ Claims transcription across trust domains SHOULD ensure that the workflow-relate
 # Security and Privacy Considerations
 
 * As Domain I and II may have public Internet in between, the correct and confidential passing of `tctx` and `rctx` may require encryption or masking techniques.
+
+* Confidentiality and the preservation of authorization semantics are separate properties. Encryption or masking of `tctx` protects the value from disclosure, but does not by itself demonstrate that a transcribing AS or TTS preserved the authorization it represents. An AS or TTS performing claims transcription MUST also satisfy the `tctx` non-expansion requirements in {{trans}}.
 
 
 # IANA Considerations
@@ -428,6 +436,10 @@ HTTP/1.1 200 OK
 
 As shown in Figure 4 and Figure 6, the AS in Trust Domain I protects and evolves the claims during Txn-JAG issuance: for immutability, the `txn` claim is copied verbatim; for evolution, workload_a is appended to `req_wl` to record the exchange point; and for security, sensitive information like `req_ip` and `customer_type` are encrypted.
 
+In this example, the `tctx` values `action`, `ticker`, and `quantity` retain their semantics across the boundary. Encrypting `customer_type` protects the value from disclosure on the path between the domains; it does not change the authorization meaning of that value for the intended recipient, which can still recover it.
+
+This example also illustrates the non-expansion rule in {{trans}}. Here `ticker` and `quantity` are the exact parameters of the transaction being authorized rather than bounds on it. Changing `MSFT` to another ticker is therefore not a valid narrowing, and replacing the exact quantity with a different quantity is not automatically a narrowing either, since it describes a different transaction rather than a subset of the original authority. That the `scope` remains `trade.stocks` in both tokens does not make such a change non-expanding. Omitting `quantity` altogether would likewise violate {{trans}} if Trust Domain II interprets its absence by applying a broader default.
+
 ### Access Token Request and Response
 Workload A presents the Txn-JAG as an assertion to the AS of Trust Domain II to request an access token.
 
@@ -509,7 +521,7 @@ Upon receiving the access token, Workload A in Trust Domain II exchanges it for 
 ~~~
 *Figure 10: Txn-Token-II Payload*
 
-As can be seen from Figure 10, the TTS preserves the `txn` claim verbatim and evolves the `req_wl` claim, appending the identifier of Endpoint B.
+As can be seen from Figure 10, the TTS preserves the `txn` claim verbatim and evolves the `req_wl` claim, appending the identifier of Endpoint B. The transaction authorization context has also remained non-expanding throughout the exchange: the Txn-Token in Trust Domain II authorizes the same trade as the Txn-Token in Trust Domain I, so no action permitted in Trust Domain II was absent from the upstream authorization.
 
 ## Example Mode B: Direct Txn-Token Exchange
 
@@ -549,16 +561,15 @@ The AS in Domain I transcribes the claims. In the issued Txn-JAG, the `aud` is s
         "action": "BUY",
         "ticker": "MSFT",
         "quantity": "100",
-        "customer_type": {
-            "geo": "US",
-            "level": "VIP"
         }
     }
 }
 ~~~
 *Figure 12: Txn-JAG Payload*
 
-As defined in {{trans}}, the AS in Trust Domain I applies an removal strategy to the `req_wl` claim. The internal path preceding workload_a is removed to protect the internal topology of Domain I.
+As defined in {{trans}}, the AS in Trust Domain I applies a removal strategy to the `req_wl` claim. The internal path preceding `workload_a` is removed to protect the internal topology of Domain I. 
+
+In `tctx`, only `customer_type` is removed because it is not required by Domain II for authorization enforcement, while `action`, `ticker`, and `quantity` remain unchanged. Therefore, the resulting authorization is not broadened and satisfies the non-expansion requirement in {{trans}}.
 
 ### Txn-Token Request and Response
 
@@ -596,15 +607,13 @@ The TTS validates the cross-domain Txn-JAG based on the pre-established trust re
   "tctx": {
         "action": "BUY",
         "ticker": "MSFT",
-        "quantity": "100",
-        "customer_type": {
-            "geo": "US",
-            "level": "VIP"
-        }
+        "quantity": "100"
     }
 }
 ~~~
 *Figure 14: Txn-Token-II Payload*
+
+As shown in Figure 14, the TTS in Trust Domain II transcribes the same authorized transaction details while evolving `req_wl` to record Endpoint B. Any other `tctx` transformation at this step would have to satisfy the non-expansion requirement in {{trans}}.
 
 # Acknowledgments
 {:numbered="false"}
